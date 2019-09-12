@@ -28,8 +28,8 @@ function findSteps(id) {
             'steps.instructions'
         ])
         .where({ "schemes.id": id })
-        .leftjoin('schemes', 'schemes.id', 'steps.id')
-        .orderBy('id', 'asc')
+        .join('schemes', 'schemes.id', 'steps.id')
+        .orderBy('steps.id', 'asc')
 };
 
 function add(scheme) {
@@ -49,10 +49,10 @@ function add(scheme) {
 function update(id, changes) {
     return db('schemes')
         .update(changes)
-        .where({ id })
-        .then(updated => {
-            return updated;
-        });
+        .where({ "scheme_id": id })
+    // .then(updated => {
+    //     return updated;
+    // });
 };
 
 function remove(id) {
