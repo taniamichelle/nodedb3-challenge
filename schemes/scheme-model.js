@@ -46,13 +46,10 @@ function add(scheme) {
 //         .then(([id]) => findById(id));
 // };
 
-function update(id, changes) {
+function update(changes, id) {
     return db('schemes')
         .update(changes)
-        .where({ "scheme_id": id })
-    // .then(updated => {
-    //     return updated;
-    // });
+        .where('id', Number(id))
 };
 
 function remove(id) {
