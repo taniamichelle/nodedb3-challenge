@@ -1,10 +1,10 @@
-const db = require('./db-config');
+const db = require('../data/db-config');
 
 module.exports = {
     find,
     findById,
     findSteps,
-    addScheme,
+    add,
     update,
     remove
 };
@@ -15,25 +15,24 @@ function find() {
 
 function findById(id) {
     return db('schemes')
-        .where({ scheme_id: id })
+        .where({ id })
         .first()
-        .then(scheme => {
-            return scheme;
-        });
 };
 
 function findSteps(id) {
     return db('steps')
-        .join('schemes.id', 'steps.id')
-        .where({ scheme_id: id })
-        .select('steps.id', 'schemes.scheme_name', 'steps.step_number', 'steps.instructions')
+        .select([
+            'steps.id',
+            'schemes.scheme_name',
+            'steps.step_number',
+            'steps.instructions'
+        ])
+        .where({ "schemes.id": id })
+        .leftjoin('schemes', 'schemes.id', 'steps.id')
         .orderBy('id', 'asc')
-        .then(steps => {
-            return steps;
-        });
 };
 
-function addScheme(scheme) {
+function add(scheme) {
     return db('schemes')
         .insert(scheme)
         .then(scheme => {
@@ -41,15 +40,24 @@ function addScheme(scheme) {
         });
 };
 
+// function add(schemes) {
+//     return db('schemes')
+//         .insert(scheme, 'id')
+//         .then(([id]) => findById(id));
+// };
+
 function update(id, changes) {
     return db('schemes')
+        .update(changes)
         .where({ id })
-        .update(changes);
+        .then(updated => {
+            return updated;
+        });
 };
 
 function remove(id) {
     return db('schemes')
         .where('id', id)
+        .first()
         .del();
 };
-
